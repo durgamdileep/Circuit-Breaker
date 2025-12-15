@@ -19,7 +19,7 @@
 3. Service B keeps trying to call Service C → it starts failing or slowing down.
 4. Service A calls Service B → it starts failing as well.
 
-** ⚠️ Result: Multiple services are affected → cascading failure.**
+**⚠️ Result: Multiple services are affected → cascading failure.**
 
 ---
 
@@ -43,16 +43,16 @@
 
 A circuit breaker typically has three states:
 
-- ✅ `Closed (default)`  
+- ✅ **Closed (default)**  
    - Normal operation. Calls to the service are allowed.  
    - The circuit breaker monitors for failures.
 
-- ⛔ `Open`  
+- ⛔ **Open**  
    - Triggered when failures exceed a threshold (e.g., 5 failed calls in a row).  
    - Calls are immediately rejected without trying the service.  
    - Prevents overloading the failing service.
 
-- 🟡 `Half-Open`  
+- 🟡 **Half-Open**  
    - After a timeout, the circuit breaker allows a limited number of test requests.  
    - If they succeed, the circuit closes again.  
    - If they fail, the circuit opens again.
