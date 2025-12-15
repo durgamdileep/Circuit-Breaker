@@ -104,44 +104,42 @@ A circuit breaker typically has three states:
 ## 🔄 Execution Flow with Circuit Breaker & Retry
 
 ### 1️⃣ Method executes first  
-📨 The client request calls the method.  
-🔒 Circuit Breaker is in **CLOSED** state → request is allowed.
+- 📨 The client request calls the method.  
+- 🔒 Circuit Breaker is in **CLOSED** state → request is allowed.
 
 
 ### 2️⃣ Method fails  
-❌ Failure is recorded by the Circuit Breaker.  
-📈 Failure count increases.
+- ❌ Failure is recorded by the Circuit Breaker.  
+- 📈 Failure count increases.
 
 
 ### 3️⃣ 🔁 @Retry is triggered  
-🔄 Retry automatically calls the same method again.
-
-Each retry attempt:  
-- 🆕 Is treated as a new call  
-- 📈 Increases failure count if it fails again  
+- 🔄 Retry automatically calls the same method again.
+- Each retry attempt:  
+  - 🆕 Is treated as a new call
+  - 📈 Increases failure count if it fails again  
 
 
 ### 4️⃣ 🚨 Failure threshold exceeded  
-📊 When failure rate crosses the configured threshold:  
-🔓 Circuit Breaker moves to **OPEN** state
+- 📊 When failure rate crosses the configured threshold:  
+- 🔓 Circuit Breaker moves to **OPEN** state
 
 
 ### 5️⃣ ⛔ Circuit Breaker in OPEN state  
-❌ No more calls are allowed  
-❌ Remaining retry attempts are **NOT executed**  
-⚡ Calls fail immediately (fail-fast)
+- ❌ No more calls are allowed  
+- ❌ Remaining retry attempts are **NOT executed**  
+- ⚡ Calls fail immediately (fail-fast)
 
 
 ### 6️⃣ ⏳ After wait duration  
-🔄 Circuit Breaker moves to **HALF-OPEN** state
+- 🔄 Circuit Breaker moves to **HALF-OPEN** state
 
 
 ### 7️⃣ 🧪 HALF-OPEN state  
-🔢 Limited number of test calls are allowed  
-🔁 Retry **IS allowed** for these test calls  
-
-- ✅ If calls succeed → circuit closes  
-- ❌ If calls fail → circuit opens again 
+- 🔢 Limited number of test calls are allowed  
+- 🔁 Retry **IS allowed** for these test calls  
+   - ✅ If calls succeed → circuit closes  
+   - ❌ If calls fail → circuit opens again 
 
 ---
 
@@ -171,6 +169,18 @@ resilience4j:
         # Automatically moves from OPEN to HALF-OPEN
 
         event-consumer-buffer-size: 10       # Stores last 10 circuit breaker events
+
+  timelimiter:
+    instances:
+      userService:                         # TimeLimiter config for the same service
+        timeout-duration: 2s               # Maximum duration allowed for method execution
+
+  retry:
+    instances:
+      userService:                         # Retry config for the same service
+        max-attempts: 8                    # Maximum number of retry attempts
+        wait-duration: 500ms               # Wait time between retry attempts
+
 
 @CircuitBreaker(name = "userService", fallbackMethod = "fallbackMethod") // here userService is my circui breaker name we need add separate properties for each circuit breaker name
 @Retry(name = "userService")
