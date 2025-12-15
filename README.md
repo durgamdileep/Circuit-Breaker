@@ -10,7 +10,7 @@
 
 ## 🌊 Cascading Failures
 
-- When `one service fails` in a microservices architecture, it can `cause other dependent services to fail`. This is called a cascading failure.
+- When `one service fails due non-transient failure` in a microservices architecture, it can `cause other dependent services to fail`. This is called a cascading failure.
 
 ### 🔍 Example scenario:
 
